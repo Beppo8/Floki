@@ -14,6 +14,18 @@ defmodule Floki do
     end
   end
 
+  defp seller_email(html_body) do
+    html_body
+    |> Floki.find(".seller-email")
+    |> Floki.text()
+  end
+
+  defp album_title(html_body) do
+    html_body
+    |> Floki.find(".album-title")
+    |> Floki.text()
+  end
+
   defp format_seller_info(html) do
     case html do
       {:ok, body} ->
