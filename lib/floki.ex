@@ -21,6 +21,7 @@ defmodule Floki do
     html_body
     |> Floki.find(selector)
     |> Floki.text()
+    |> String.replace("\n", "")
   end
 
   defp format_seller_info(html) do
@@ -28,7 +29,7 @@ defmodule Floki do
       {:ok, body} ->
         "#{get_info(body, "album-title")}" <>
         "#{get_info(body, "seller-email")}" <>
-        "#{get_info(body, "seller-phone")}"
+        "#{get_info(body, "seller-phone")}\n"
       {:error, msg} ->
         msg
     end
