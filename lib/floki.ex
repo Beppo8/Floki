@@ -3,33 +3,32 @@ defmodule Floki do
   @index_page "https://elixircastsio.github.io/record-store/"
 
   def write_seller_info do
+    file = File.stream!("seller-info.txt")
+
     case fetch_html(@index_page) do
       {:ok, html} ->
-        #get links, parse info
         html
         |> album_links()
         |> Stream.map(&fetch_html/1)
+        |> Stream.map(&format_seller_info/1)
+        |> Enum.into(file)
       {:error, msg} ->
         msg
     end
   end
 
-  defp seller_email(html_body) do
+  defp get_info(html_body, selector) do
     html_body
-    |> Floki.find(".seller-email")
-    |> Floki.text()
-  end
-
-  defp album_title(html_body) do
-    html_body
-    |> Floki.find(".album-title")
+    |> Floki.find(selector)
     |> Floki.text()
   end
 
   defp format_seller_info(html) do
     case html do
       {:ok, body} ->
-        # some code
+        "#{get_info(body, "album-title")}" <>
+        "#{get_info(body, "seller-email")}" <>
+        "#{get_info(body, "seller-phone")}"
       {:error, msg} ->
         msg
     end
